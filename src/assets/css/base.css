@@ -1,0 +1,55 @@
+/* color palette from <https://github.com/vuejs/theme> */
+:root {
+  --vt-c-white: #ffffff;
+  --vt-c-white-soft: #f8f8f8;
+  --vt-c-white-mute: #f2f2f2;
+}
+
+/* semantic color variables for this project */
+:root {
+  --color-background: var(--vt-c-white);
+  --color-background-soft: var(--vt-c-white-soft);
+  --color-background-mute: var(--vt-c-white-mute);
+
+  --section-gap: 160px;
+}
+
+@font-face {
+  font-family: 'Lexent';
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src: url('../fonts/Lexend-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Lexent';
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+  src: url('../fonts/Lexend-SemiBold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Lexent';
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  src: url('../fonts/Lexend-Bold.ttf') format('truetype');
+}
+
+html {
+  font-family: 'Lexent';
+  font-size: 62.5%;
+  font-weight: 400;
+  line-height: 1.15em;
+  letter-spacing: -0.03rem;
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  height: 100%;
+  color: #0e0c0c;
+  scroll-behavior: smooth;
+}
+* {
+  box-sizing: border-box;
+}
