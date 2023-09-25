@@ -10,8 +10,10 @@
   --color-background: var(--vt-c-white);
   --color-background-soft: var(--vt-c-white-soft);
   --color-background-mute: var(--vt-c-white-mute);
-
   --section-gap: 160px;
+  --color-text-primary: #01041d;
+  --color-text-blue: #4f647a;
+  --color-text-green: #005208;
 }
 
 @font-face {
@@ -38,6 +40,10 @@
   src: url('../fonts/Lexend-Bold.ttf') format('truetype');
 }
 
+* {
+  box-sizing: border-box;
+}
+
 html {
   font-family: 'Lexent';
   font-size: 62.5%;
@@ -46,10 +52,21 @@ html {
   letter-spacing: -0.03rem;
   text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
-  height: 100%;
-  color: #0e0c0c;
+  color: var(--color-text-primary);
   scroll-behavior: smooth;
+  text-align: center;
 }
-* {
-  box-sizing: border-box;
+
+button {
+  border: none;
+  outline: none;
+  background-color: #89f400;
+  border-radius: 1.5rem;
+  padding: 1.7rem 3.7rem;
+  font-size: 1.6rem;
+  line-height: 2rem;
+  font-weight: 600;
+  color: var(--color-text-green);
+  width: 100%;
+  max-width: 30rem;
 }
