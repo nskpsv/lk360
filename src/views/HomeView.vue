@@ -1,5 +1,10 @@
 <script setup lang="ts">
 import PersonPointer from '@/components/PersonPointer.vue'
+import router from '@/router'
+
+function onGo() {
+  router.push('/quiz')
+}
 </script>
 
 <template>
@@ -48,7 +53,7 @@ import PersonPointer from '@/components/PersonPointer.vue'
       />
     </main>
     <footer class="footer">
-      <button>Let’s Go</button>
+      <button @click="onGo">Let’s Go</button>
     </footer>
   </div>
 </template>
@@ -84,7 +89,11 @@ import PersonPointer from '@/components/PersonPointer.vue'
     margin: 3% 1.6rem 0;
     flex-grow: 1;
     position: relative;
-    background-image: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.1) 20%),
+    background-image: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 1) 0%,
+        rgba(255, 255, 255, 0.1) 20%
+      ),
       linear-gradient(0deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 20%),
       url('../assets/images/main-bg.svg');
     background-repeat: no-repeat;
