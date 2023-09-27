@@ -53,7 +53,7 @@ function onGo() {
       />
     </main>
     <footer class="footer">
-      <button @click="onGo">Let’s Go</button>
+      <button class="continue-button" @click="onGo">Let’s Go</button>
     </footer>
   </div>
 </template>
