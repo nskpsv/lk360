@@ -17,9 +17,16 @@ const emit = defineEmits<{
 <template>
   <div
     :class="{ container: true, checked: value, border: type === 'border' }"
-    @click="$emit('update:value', !value)"
+    @click="emit('update:value', !value)"
   >
-    <svg v-show="value || type === 'gray-checkmark'" width="12" height="9" viewBox="0 0 12 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg
+      v-show="value || type === 'gray-checkmark'"
+      width="12"
+      height="9"
+      viewBox="0 0 12 9"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
       <line
         x1="0.5"
         y1="4.5"
@@ -50,10 +57,10 @@ const emit = defineEmits<{
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background-color: #4F647A4D;
+  background-color: #4f647a4d;
 }
 .border {
-  border: 0.1rem solid #4F647A4D;
+  border: 0.1rem solid #4f647a4d;
   background-color: transparent;
 }
 .checked {

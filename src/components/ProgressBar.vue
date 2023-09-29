@@ -36,6 +36,7 @@ onMounted(
 
 <style lang="scss" scoped>
 .bar {
+  width: 100%;
   height: 0.6rem;
   position: relative;
   border-radius: 0.6rem;

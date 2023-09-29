@@ -1,10 +1,5 @@
 <script setup lang="ts">
 import PersonPointer from '@/components/PersonPointer.vue'
-import router from '@/router'
-
-function onGo() {
-  router.push('/quiz')
-}
 </script>
 
 <template>
@@ -53,7 +48,7 @@ function onGo() {
       />
     </main>
     <footer class="footer">
-      <button class="continue-button" @click="onGo">Let’s Go</button>
+      <button class="continue-button" @click="$router.push({path: '/quiz'})">Let’s Go</button>
     </footer>
   </div>
 </template>
@@ -62,7 +57,7 @@ function onGo() {
 .home-view-wrapper {
   display: flex;
   flex-direction: column;
-  //if browser is not supported svh, height wil be 100vh
+  // if browser is not supported svh, height wil be 100vh
   height: 100vh;
   height: 100svh;
 
@@ -132,16 +127,8 @@ function onGo() {
   }
 }
 
-// @media (min-width: 600px) {
-//   .home-view-wrapper {
-//     .content {
-//       margin: 3% 0 0;
-//     }
-//   }
-// }
-
-//Fix scroll in old Safari, when height: 100vh
-//https://qna.habr.com/q/953445
+// Fix scroll in old Safari, when height: 100vh
+// https://qna.habr.com/q/953445
 @supports (-webkit-touch-callout: none) {
   .home-view-wrapper {
     height: -webkit-fill-available;
