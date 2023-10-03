@@ -2,6 +2,11 @@
 import PersonPointer from '@/components/PersonPointer.vue';
 import { useProgressStore, useQuizStore } from '@/stores';
 import { onMounted } from 'vue';
+import p1 from '../assets/images/main-person-1.jpeg';
+import p2 from '../assets/images/main-person-2.jpeg';
+import p3 from '../assets/images/main-person-3.jpeg';
+import p4 from '../assets/images/main-person-4.jpeg';
+import p5 from '../assets/images/main-person-5.jpeg';
 
 const quizState = useQuizStore();
 const progressState = useProgressStore();
@@ -29,31 +34,31 @@ onMounted(() => {
       <PersonPointer
         class="person p1"
         color="#7140FA"
-        photo-src="src/assets/images/main-person-1.jpeg"
+        :photo-src="p1"
         size="50"
       />
       <PersonPointer
         class="person p2"
         color="#007AFF"
-        photo-src="src/assets/images/main-person-2.jpeg"
+        :photo-src="p2"
         size="50"
       />
       <PersonPointer
         class="person p3"
         color="#FF8633"
-        photo-src="src/assets/images/main-person-3.jpeg"
+        :photo-src="p3"
         size="56"
       />
       <PersonPointer
         class="person p4"
         color="#17B774"
-        photo-src="src/assets/images/main-person-4.jpeg"
+        :photo-src="p4"
         size="53"
       />
       <PersonPointer
         class="person p5"
         color="#FF511B"
-        photo-src="src/assets/images/main-person-5.jpeg"
+        :photo-src="p5"
         size="53"
       />
     </main>
