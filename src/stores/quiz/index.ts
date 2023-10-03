@@ -1,15 +1,16 @@
 import { defineStore } from 'pinia';
-import { questions, initialQuestion, questionsList } from './questions';
+import { questions, initialQuestion } from './questions';
 
-import type { QuestionId } from './types';
+import type { Question, QuestionId, Questions } from './types';
 
-function getClearState() {
-  
-  return {
-    progress: {
-      total: 1 + questionsList.length,
-      current: -1,
-    },
+export function getTotalQuestions() {
+  // one initial question + other questions
+  return 1 + questions[Object.keys(questions)[0] as keyof Questions].length;
+}
+
+export const useQuizStore = defineStore('quiz', {
+  state: () => ({
+    currentQuestion: 'initial' as number | 'initial',
     initialQuestion,
     questions,
     answers: {
@@ -22,27 +23,25 @@ function getClearState() {
       trackingPeoples: '',
       features: new Array<string>(),
     },
-  };
-}
-
-export const useQuizStore = defineStore('quiz', {
-  state: () => getClearState(),
+  }),
 
   actions: {
-    getInitialQuestion() {
-      return this.initialQuestion;
-    },
+    getNextQuestion(): { question: Question; hasNext: boolean } {
+      const qID = this.answers.who.toLowerCase() as keyof Questions;
 
-    getNextQuestion() {
-      this.progress.current++;
-
-      return questions[this.answers.who.toLowerCase() as keyof typeof questions][
-        this.progress.current
-      ];
-    },
-
-    getProgress() {
-      return this.progress;
+      if (this.currentQuestion === 'initial') {
+        this.currentQuestion = -1;
+        return {
+          question: this.initialQuestion,
+          hasNext: true,
+        };
+      } else {
+        this.currentQuestion++;
+        return {
+          question: questions[qID][this.currentQuestion],
+          hasNext: !!questions[qID][this.currentQuestion + 1],
+        };
+      }
     },
 
     setAnswer(id: QuestionId, value: string) {

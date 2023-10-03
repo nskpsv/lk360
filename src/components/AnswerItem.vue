@@ -27,7 +27,7 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <div :class="{answer: true, selected}" @click="emit('update:selected', !selected)">
+  <div :class="{ answer: true, selected }" @click="emit('update:selected', !selected)">
     <div class="icon">
       <slot name="icon"></slot>
     </div>
@@ -46,7 +46,7 @@ const emit = defineEmits<{
   gap: 1.2rem;
   padding: 1.2rem;
   border-radius: 16px;
-  background-color: #EDF0F2;
+  background-color: #edf0f2;
 
   .text {
     text-align: start;
@@ -55,6 +55,23 @@ const emit = defineEmits<{
   }
 }
 .selected {
-   background: rgba(0, 122, 255, 0.2);
+  background: rgba(0, 122, 255, 0.2);
+}
+
+@media screen and (min-width: 600px) {
+  .answer {
+    padding: 1.6rem;
+
+    .icon {
+      :deep(svg) {
+        width: 6.5rem;
+        height: 6.5rem;
+      }
+    }
+    .text {
+      font-size: 2rem;
+      line-height: 2.4rem;
+    }
+  }
 }
 </style>

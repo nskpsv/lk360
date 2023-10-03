@@ -1,5 +1,15 @@
 <script setup lang="ts">
-import PersonPointer from '@/components/PersonPointer.vue'
+import PersonPointer from '@/components/PersonPointer.vue';
+import { useProgressStore, useQuizStore } from '@/stores';
+import { onMounted } from 'vue';
+
+const quizState = useQuizStore();
+const progressState = useProgressStore();
+
+onMounted(() => {
+  quizState.$reset();
+  progressState.$reset();
+});
 </script>
 
 <template>
@@ -48,7 +58,7 @@ import PersonPointer from '@/components/PersonPointer.vue'
       />
     </main>
     <footer class="footer">
-      <button class="continue-button" @click="$router.push({path: '/quiz'})">Let’s Go</button>
+      <button class="continue-button" @click="$router.push({ path: '/quiz' })">Let’s Go</button>
     </footer>
   </div>
 </template>

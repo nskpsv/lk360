@@ -1,15 +1,18 @@
 <script lang="ts" setup>
 import AnswerItem from '@/components/AnswerItem.vue';
 import ProgressBar from '@/components/ProgressBar.vue';
-import { useQuizStore } from '@/stores/quiz';
-import { onBeforeUnmount, ref } from 'vue';
+import router from '@/router';
+import { useQuizStore, useProgressStore } from '@/stores';
+import { toRef, toRefs } from 'vue';
 
 const state = useQuizStore();
-const progress = state.getProgress();
-const question = ref(state.getInitialQuestion());
+const progress = useProgressStore();
+const { question: currentQuestion, hasNext: hasNextQuestion } = toRefs(
+  toRef(state.getNextQuestion()).value,
+);
 
 function checkIsSelected(value: string) {
-  const answer = state.answers[question.value.id as keyof typeof state.answers];
+  const answer = state.answers[currentQuestion.value.id as keyof typeof state.answers];
 
   if (typeof answer === 'object') {
     return answer.includes(value);
@@ -19,44 +22,52 @@ function checkIsSelected(value: string) {
 }
 
 function onAnswer(answer: string) {
-  if (question.value.multiple) {
-    state.setAnswer(question.value.id, answer);
+  if (currentQuestion.value.multiple) {
+    state.setAnswer(currentQuestion.value.id, answer);
   } else {
-    state.setAnswer(question.value.id, answer);
+    state.setAnswer(currentQuestion.value.id, answer);
     onContinue();
   }
 }
 
 function onContinue() {
-  setTimeout(() => (question.value = state.getNextQuestion()), 100);
+  progress.incrementPropgress();
+
+  if (hasNextQuestion.value) {
+    const { hasNext, question } = state.getNextQuestion();
+
+    setTimeout(() => (currentQuestion.value = question), 100);
+    hasNextQuestion.value = hasNext;
+  } else {
+    console.log(state.answers);
+
+    router.push({ name: progress.nextStep(), replace: true });
+  }
 }
 
 function onSkip() {
-  state.setAnswer(question.value.id, 'Other');
+  state.setAnswer(currentQuestion.value.id, 'Other');
+  onContinue();
 }
-
-onBeforeUnmount(() => {
-  state.$reset();
-});
 </script>
 
 <template>
   <div class="quiz-wrapper">
     <header class="header">
       <div class="progress">
-        <ProgressBar :max-value="progress.total" :current-value="progress.current + 1" />
-        <button class="skip-button" @click="onSkip">Skip</button>
+        <ProgressBar :max-value="progress.total" :current-value="progress.current" />
+        <button class="skip-button caption-text" @click="onSkip">Skip</button>
       </div>
-      <p class="question">
-        {{ question.text }}
+      <p class="question main-text">
+        {{ currentQuestion.text }}
       </p>
     </header>
     <main>
       <div class="answers">
         <AnswerItem
-          v-for="(answer, i) in question.answers"
+          v-for="(answer, i) in currentQuestion.answers"
           :key="i"
-          :selectable="question.multiple"
+          :selectable="currentQuestion.multiple"
           :selected="checkIsSelected(answer.text)"
           @click="onAnswer(answer.text)"
         >
@@ -69,11 +80,11 @@ onBeforeUnmount(() => {
         </AnswerItem>
       </div>
     </main>
-    <footer v-show="question.multiple" class="footer">
+    <footer class="footer" v-show="currentQuestion.multiple">
       <button
         class="continue-button"
         @click="onContinue"
-        :disabled="!state.answers[question.id].length"
+        :disabled="!state.answers[currentQuestion.id].length"
       >
         Continue
       </button>
@@ -84,13 +95,12 @@ onBeforeUnmount(() => {
 <style lang="scss" scoped>
 .quiz-wrapper {
   padding: 0 3rem;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: auto auto 1fr;
   height: 100vh;
   height: 100svh;
 
   .header {
-    padding: 2rem 0;
     background-color: #fff;
     position: sticky;
     top: 0;
@@ -101,22 +111,15 @@ onBeforeUnmount(() => {
     .progress {
       display: flex;
       align-items: center;
-      padding: 1.2rem 0;
     }
 
     .skip-button {
       margin-left: 2rem;
       background-color: transparent;
       border: none;
-      font-size: 1.4rem;
-      line-height: normal;
-      color: #4f647a;
     }
 
     .question {
-      font-size: 2.4rem;
-      line-height: normal;
-      font-weight: 600;
       margin: 1.2rem 0 0;
     }
   }
@@ -129,7 +132,7 @@ onBeforeUnmount(() => {
     gap: 0.8rem;
   }
   .footer {
-    padding: 1.2rem;
+    align-self: end;
     position: sticky;
     bottom: 0;
     left: 0;
