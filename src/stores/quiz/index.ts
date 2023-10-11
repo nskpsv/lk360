@@ -10,7 +10,7 @@ export function getTotalQuestions() {
 
 export const useQuizStore = defineStore('quiz', {
   state: () => ({
-    currentQuestion: 'initial' as number | 'initial',
+    currentQuestion: 0,
     initialQuestion,
     questions,
     answers: {
@@ -27,21 +27,22 @@ export const useQuizStore = defineStore('quiz', {
 
   actions: {
     getNextQuestion(): { question: Question; hasNext: boolean } {
-      const qID = this.answers.who.toLowerCase() as keyof Questions;
-
-      if (this.currentQuestion === 'initial') {
-        this.currentQuestion = -1;
+      if (this.answers.who === 'initial') {
         return {
           question: this.initialQuestion,
           hasNext: true,
         };
-      } else {
-        this.currentQuestion++;
-        return {
-          question: questions[qID][this.currentQuestion],
-          hasNext: !!questions[qID][this.currentQuestion + 1],
-        };
       }
+
+      const qID = this.answers.who.toLowerCase() as keyof Questions;
+      const result = {
+        question: questions[qID][this.currentQuestion],
+        hasNext: !!questions[qID][this.currentQuestion + 1],
+      };
+
+      this.currentQuestion++;
+
+      return result;
     },
 
     setAnswer(id: QuestionId, value: string) {

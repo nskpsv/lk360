@@ -1,3 +1,5 @@
 export { useProgressStore } from './progress';
 export { useQuizStore } from './quiz';
-export { useEmailInputStore } from './email';
+export { usePerksStore } from './perks';
+export { useUserStore } from './user';
+export { useStripeStore } from './stripe';

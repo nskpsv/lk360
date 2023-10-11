@@ -2,9 +2,10 @@
 import ProgressBar from '@/components/ProgressBar.vue';
 import router from '@/router';
 import { useProgressStore } from '@/stores';
-import { usePerksStore } from '@/stores/perks';
+import { usePerksStore } from '@/stores';
 import { onUpdated, ref, toRefs } from 'vue';
 import { useDebounce } from '../hooks/use-debounce';
+import { useUserStore } from '@/stores/user';
 
 const progress = useProgressStore();
 const perks = usePerksStore();
@@ -13,6 +14,7 @@ const email = ref('');
 const input = ref<HTMLInputElement>();
 const container = ref<HTMLDivElement>();
 const error = ref<boolean>(false);
+const state = useUserStore();
 let focused = false;
 
 window.visualViewport!.addEventListener('resize', useDebounce(onResize, 50));
@@ -47,10 +49,14 @@ function onEmailInput(e: Event) {
   email.value = input.value;
 }
 
-function onEmailSubmit() {
+async function onEmailSubmit() {
   error.value = !/\b\w+@\w+\.[A-z]{2,}\b/gi.test(email.value);
-  
-  // go to the next step logic
+
+  if (!error.value) {
+    progress.incrementPropgress();
+    state.setUserEmail(email.value);
+    router.push({ name: progress.nextStep(), replace: true });
+  }
 }
 
 onUpdated(() => {

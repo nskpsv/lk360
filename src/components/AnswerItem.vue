@@ -47,6 +47,7 @@ const emit = defineEmits<{
   padding: 1.2rem;
   border-radius: 16px;
   background-color: #edf0f2;
+  // height: 8.4rem;
 
   .text {
     text-align: start;

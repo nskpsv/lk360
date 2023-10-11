@@ -1,4 +1,1 @@
-export const roadmap = [
-    'quiz',
-    'perks',
-]
+export const roadmap = ['home', 'quiz', 'perks', 'price', 'pay'];

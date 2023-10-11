@@ -2,7 +2,6 @@ import gjImage from '../../assets/images/great-job.png';
 import qsImage from '../../assets/images/quick-search.png';
 import rtlImage from '../../assets/images/real-time-location.png';
 import unImage from '../../assets/images/unlimited-notifications.png';
-import aiaImage from '../../assets/images/ai-assistant.png';
 
 import type { Perks } from "./types";
 
@@ -26,11 +25,6 @@ export const perks: Perks = [
         title: 'Unlimited notifications',
         caption: 'Received notifications when loved once leave or return to places.',
         content: unImage,
-    },
-    {
-        title: 'AI assistant',
-        caption: 'Chat Bot in travel and averyday life.',
-        content: aiaImage,
     },
     {
         title: 'What`s your E-mail?',

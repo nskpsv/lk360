@@ -6,17 +6,10 @@ import { roadmap } from './roadmap';
 export const useProgressStore = defineStore('progress', {
   state: () => ({
     total: getTotalPerks() + getTotalQuestions(),
-    current: 0,
+    current: 1,
     step: roadmap[0],
   }),
   actions: {
-    getProgress() {
-      return {
-        total: this.total,
-        current: this.current,
-      };
-    },
-
     incrementPropgress() {
       if (this.current < this.total) {
         this.current++;

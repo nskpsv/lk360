@@ -3,10 +3,11 @@ import AnswerItem from '@/components/AnswerItem.vue';
 import ProgressBar from '@/components/ProgressBar.vue';
 import router from '@/router';
 import { useQuizStore, useProgressStore } from '@/stores';
-import { toRef, toRefs } from 'vue';
+import { ref, toRef, toRefs } from 'vue';
 
 const state = useQuizStore();
 const progress = useProgressStore();
+const content = ref<HTMLDivElement>();
 const { question: currentQuestion, hasNext: hasNextQuestion } = toRefs(
   toRef(state.getNextQuestion()).value,
 );
@@ -33,6 +34,8 @@ function onAnswer(answer: string) {
 function onContinue() {
   progress.incrementPropgress();
 
+  content.value?.scrollTo(0, 0);
+
   if (hasNextQuestion.value) {
     const { hasNext, question } = state.getNextQuestion();
 
@@ -47,12 +50,13 @@ function onContinue() {
 
 function onSkip() {
   state.setAnswer(currentQuestion.value.id, 'Other');
+
   onContinue();
 }
 </script>
 
 <template>
-  <div class="quiz-wrapper">
+  <div class="view-wrapper">
     <header class="header">
       <div class="progress">
         <ProgressBar :max-value="progress.total" :current-value="progress.current" />
@@ -62,24 +66,22 @@ function onSkip() {
         {{ currentQuestion.text }}
       </p>
     </header>
-    <main>
-      <div class="answers">
-        <AnswerItem
-          v-for="(answer, i) in currentQuestion.answers"
-          :key="i"
-          :selectable="currentQuestion.multiple"
-          :selected="checkIsSelected(answer.text)"
-          @click="onAnswer(answer.text)"
-        >
-          <template v-slot:icon>
-            <component :is="answer.icon" />
-          </template>
-          <template v-slot:text>
-            <p>{{ answer.text }}</p>
-          </template>
-        </AnswerItem>
-      </div>
-    </main>
+    <div ref="content" class="content">
+      <AnswerItem
+        v-for="(answer, i) in currentQuestion.answers"
+        :key="i"
+        :selectable="currentQuestion.multiple"
+        :selected="checkIsSelected(answer.text)"
+        @click="onAnswer(answer.text)"
+      >
+        <template v-slot:icon>
+          <component :is="answer.icon" />
+        </template>
+        <template v-slot:text>
+          <p>{{ answer.text }}</p>
+        </template>
+      </AnswerItem>
+    </div>
     <footer class="footer" v-show="currentQuestion.multiple">
       <button
         class="continue-button"
@@ -93,13 +95,8 @@ function onSkip() {
 </template>
 
 <style lang="scss" scoped>
-.quiz-wrapper {
+.view-wrapper {
   padding: 0 3rem;
-  display: grid;
-  grid-template-rows: auto auto 1fr;
-  height: 100vh;
-  height: 100svh;
-
   .header {
     background-color: #fff;
     position: sticky;
@@ -123,29 +120,10 @@ function onSkip() {
       margin: 1.2rem 0 0;
     }
   }
-
-  main {
-    overflow-y: auto;
-  }
-  .answers {
+  .content {
     display: grid;
+    grid-auto-rows: min-content;
     gap: 0.8rem;
-  }
-  .footer {
-    align-self: end;
-    position: sticky;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: #fff;
-  }
-}
-
-// Fix scroll in old Safari, when height: 100vh
-// https://qna.habr.com/q/953445
-@supports (-webkit-touch-callout: none) {
-  .quiz-wrapper {
-    height: -webkit-fill-available;
   }
 }
 </style>
