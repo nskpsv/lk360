@@ -7,7 +7,7 @@ import { ref, toRef, toRefs } from 'vue';
 
 const state = useQuizStore();
 const progress = useProgressStore();
-const content = ref<HTMLDivElement>();
+const wrapper = ref<HTMLDivElement>();
 const { question: currentQuestion, hasNext: hasNextQuestion } = toRefs(
   toRef(state.getNextQuestion()).value,
 );
@@ -33,8 +33,7 @@ function onAnswer(answer: string) {
 
 function onContinue() {
   progress.incrementPropgress();
-
-  content.value?.scrollTo(0, 0);
+  wrapper.value!.scrollTop = 0;
 
   if (hasNextQuestion.value) {
     const { hasNext, question } = state.getNextQuestion();
@@ -56,7 +55,7 @@ function onSkip() {
 </script>
 
 <template>
-  <div class="view-wrapper">
+  <div ref="wrapper" class="view-wrapper">
     <header class="header">
       <div class="progress">
         <ProgressBar :max-value="progress.total" :current-value="progress.current" />
@@ -66,7 +65,7 @@ function onSkip() {
         {{ currentQuestion.text }}
       </p>
     </header>
-    <div ref="content" class="content">
+    <div class="content">
       <AnswerItem
         v-for="(answer, i) in currentQuestion.answers"
         :key="i"
@@ -96,7 +95,6 @@ function onSkip() {
 
 <style lang="scss" scoped>
 .view-wrapper {
-  padding: 0 3rem;
   .header {
     background-color: #fff;
     position: sticky;

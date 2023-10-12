@@ -9,24 +9,17 @@ import p4 from '../assets/images/main-person-4.jpeg';
 import p5 from '../assets/images/main-person-5.jpeg';
 
 const quizState = useQuizStore();
-const progressState = useProgressStore();
 const progress = useProgressStore();
 
 onMounted(() => {
   quizState.$reset();
-  progressState.$reset();
+  progress.$reset();
 });
 </script>
 
 <template>
   <div class="view-wrapper">
     <header class="header">
-      <!-- <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav> -->
       <p class="welcome">Welcome to</p>
       <h1 class="title">Locate 360</h1>
       <p class="caption-text">Find out where your loved ones are</p>
@@ -51,6 +44,7 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .view-wrapper {
+  padding: 0;
   .header {
     .welcome,
     .title {

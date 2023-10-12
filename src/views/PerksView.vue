@@ -1,20 +1,20 @@
 <script lang="ts" setup>
 import ProgressBar from '@/components/ProgressBar.vue';
 import router from '@/router';
-import { useProgressStore } from '@/stores';
-import { usePerksStore } from '@/stores';
-import { onUpdated, ref, toRefs } from 'vue';
+import { useProgressStore, useStripeStore, usePerksStore, useUserStore } from '@/stores';
+import { onUpdated, ref, toRefs, watch } from 'vue';
 import { useDebounce } from '../hooks/use-debounce';
-import { useUserStore } from '@/stores/user';
+import { loadStripe } from '@stripe/stripe-js/pure';
 
 const progress = useProgressStore();
 const perks = usePerksStore();
+const stripe = useStripeStore();
+const state = useUserStore();
 const { hasNext: hasNextPerk, perk: currentPerk } = toRefs(ref(perks.getNextPerk()).value);
 const email = ref('');
 const input = ref<HTMLInputElement>();
 const container = ref<HTMLDivElement>();
 const error = ref<boolean>(false);
-const state = useUserStore();
 let focused = false;
 
 window.visualViewport!.addEventListener('resize', useDebounce(onResize, 50));
@@ -62,10 +62,25 @@ async function onEmailSubmit() {
 onUpdated(() => {
   input.value?.focus();
 });
+
+/*
+If hasNextPerk is false, then at this time user has to enter an email,
+so now it's time to download Stripe.js =)
+*/
+watch(hasNextPerk, (value) => {
+  if (!value) {
+    loadStripe('pk_test_R5gyntAtwi0m2QVbydOCYa55002bDPQVLU').then((stripeEntity) => {
+      if (stripeEntity) {
+        stripe.setStripeEntity(stripeEntity);
+        console.log('!!!\nWe have Stripe entity\n!!!');
+      }
+    });
+  }
+});
 </script>
 
 <template>
-  <div class="perks-view-wrapper" ref="container">
+  <div class="view-wrapper" ref="container">
     <header class="header">
       <ProgressBar :max-value="progress.total" :current-value="progress.current" />
       <p class="title main-text">{{ currentPerk.title }}</p>
@@ -98,13 +113,7 @@ onUpdated(() => {
 </template>
 
 <style lang="scss" scoped>
-.perks-view-wrapper {
-  // if browser is not supported svh, height wil be 100vh
-  height: 100vh;
-  height: 100svh;
-  padding: 0 3rem;
-  display: flex;
-  flex-direction: column;
+.view-wrapper {
   .header {
     .title {
       margin: 0;
@@ -136,14 +145,6 @@ onUpdated(() => {
       background-color: #f8cdcd;
       border: 1px solid #f64e05;
     }
-  }
-}
-
-// Fix scroll in old Safari, when height: 100vh
-// https://qna.habr.com/q/953445
-@supports (-webkit-touch-callout: none) {
-  .perks-view-wrapper {
-    height: -webkit-fill-available;
   }
 }
 </style>

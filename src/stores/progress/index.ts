@@ -22,5 +22,10 @@ export const useProgressStore = defineStore('progress', {
       this.step = roadmap[roadmap.findIndex((step) => this.step === step) + 1];
       return this.step;
     },
+
+    previousStep() {
+      this.step = roadmap[roadmap.findIndex((step) => this.step === step) - 1];
+      return this.step;
+    },
   },
 });

@@ -1,5 +1,10 @@
 import axios from 'axios';
-import type { SignInResponse, CreateCustomerResponse, Config } from './types';
+import type {
+  SignInResponse,
+  CreateCustomerResponse,
+  Config,
+  CreateSubscriptionResponse,
+} from './types';
 
 const BUNDLE_ID = 'some.shit.rtk';
 
@@ -43,7 +48,7 @@ export const stripeAPI = {
       });
 
       instance.interceptors.request.use(function (config) {
-        config.headers.Authorization = `Bearer ${data.token}}`;
+        config.headers.Authorization = `Bearer ${data.token}`;
         return config;
       });
 
@@ -61,9 +66,24 @@ export const stripeAPI = {
 
       return data;
     } catch (error) {
-      handleError('Getting config error: \n',error);
+      handleError('Getting config error: \n', error);
 
       return false;
+    }
+  },
+
+  createSubscription: async (priceId: string) => {
+    try {
+      const { data } = await instance.post<CreateSubscriptionResponse>(
+        'stripe/create-subscription',
+        {
+          priceId,
+        },
+      );
+
+      return data;
+    } catch (error) {
+      handleError('Create subscription error: \n', error);
     }
   },
 };

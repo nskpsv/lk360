@@ -12,6 +12,7 @@ import ChatBotIcon from '@/components/icons/ChatBotIcon.vue';
 import RingIcon from '@/components/icons/RingIcon.vue';
 import FlagIcon from '@/components/icons/FlagIcon.vue';
 import ReviewCard from '@/components/ReviewCard.vue';
+import router from '@/router';
 
 import authorPhoto from '@/assets/images/review-author.webp';
 
@@ -21,14 +22,21 @@ const user = useUserStore();
 const stripe = useStripeStore();
 const progress = useProgressStore();
 const isFetching = ref(true);
-
 const reviews = [
   'Great app for keeping up with teens that are always on the move between sports, school and friends. After using an app for 3 weeks, it has worked flawlessly.',
   'Perfect for android to iphone. I have dementia the early stages:(This will help in the future for my family.',
   'Useful for parents to keep tabs on minors and elderly family members... Displaying physical addresses at each tracking location along a route is impressive..',
 ];
 
+function onContinue() {
+  router.push({ name: progress.nextStep(), replace: true });
+}
+
 onMounted(async () => {
+  if (user.isSignedIn && stripe.config) {
+    isFetching.value = false;
+    return;
+  }
   console.log('your e-mail: \n', user.email);
   // STEP -1- Creating customer
   console.log('Creating customer...');
@@ -54,6 +62,7 @@ onMounted(async () => {
 
   //STEP -3- Get Stripe config
   if (signInResult) {
+    user.signIn();
     console.log('we are signed in, now gettin config...');
 
     const response = await stripeAPI.getStripeConfig();
@@ -70,17 +79,12 @@ onMounted(async () => {
 
   isFetching.value = false;
 });
-
-console.log('stripe store: \n', stripe.$state);
 </script>
 
 <template>
-  <div class="price-view-wrapper">
+  <div class="view-wrapper">
     <div class="content">
-      <div class="loader" v-show="isFetching">
-        <LoadingSpinner />
-        <p class="working">Working...</p>
-      </div>
+      <LoadingSpinner v-if="isFetching" full-screen />
 
       <div class="header">
         <Locate360Icon />
@@ -140,51 +144,22 @@ console.log('stripe store: \n', stripe.$state);
       </div>
     </div>
     <footer class="footer">
-      <button
-        class="continue-button"
-        @click="() => $router.push({ name: progress.nextStep(), replace: true })"
-      >
-        Continue
-      </button>
+      <button class="continue-button" @click="onContinue">Continue</button>
     </footer>
   </div>
 </template>
 
 <style lang="scss" scoped>
-.price-view-wrapper {
-  height: 100vh;
-  height: 100svh;
-  display: flex;
-  flex-direction: column;
+.view-wrapper {
   .title {
     font-size: 1.6rem;
     line-height: 2.2rem;
     font-weight: 600;
   }
   .content {
-    flex-grow: 1;
     display: grid;
     gap: 2.8rem;
     align-items: center;
-    padding: 0 3rem;
-    overflow-y: auto;
-    .loader {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      z-index: 1000;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      background-color: white;
-    }
-    .working {
-      font-size: 1.6rem;
-      font-weight: 600;
-    }
     .header {
       display: flex;
       flex-direction: column;
@@ -234,14 +209,6 @@ console.log('stripe store: \n', stripe.$state);
       display: grid;
       gap: 1.2rem;
     }
-  }
-}
-
-// Fix scroll in old Safari, when height: 100vh
-// https://qna.habr.com/q/953445
-@supports (-webkit-touch-callout: none) {
-  .price-view-wrapper {
-    height: -webkit-fill-available;
   }
 }
 </style>

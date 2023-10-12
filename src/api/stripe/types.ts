@@ -122,3 +122,8 @@ export type SignInResponse = {
   user: User;
   token: string;
 };
+
+export type CreateSubscriptionResponse = {
+  subscriptionId: string;
+  clientSecret: string;
+};
